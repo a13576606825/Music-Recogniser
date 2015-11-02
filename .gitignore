@@ -1,9 +1,9 @@
 # Directories #
 /build/
-/bin/
+#/bin/
 target/
 # add by jj
-
+/toIgnore/
 
 # OS Files #
 .DS_Store
