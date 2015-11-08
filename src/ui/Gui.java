@@ -96,7 +96,7 @@ private void buildOutputTitle() {
        grid.add(output, 0, 8, maximumColSpan, 1);
 }
 
-private void buildFileChooserBtn(Stage primaryStage) {
+private void buildFileChooserBtn(final Stage primaryStage) {
 	fileChooserBtn = new Button("");
        fileChooserBtn.setBackground(null);
        Image fileChooserImg = new Image("document.png");
@@ -105,7 +105,6 @@ private void buildFileChooserBtn(Stage primaryStage) {
        
        fileChooserBtn.setOnAction(
                new EventHandler<ActionEvent>() {
-                   @Override
                    public void handle(final ActionEvent e) {
                 	   
                        configureFileChooser(fileChooser);
@@ -135,13 +134,12 @@ private void buildRecordBtn() {
        final Color middleColor = Color.RED;
        final Color endColor = new Color(0.23f,0.321f,0.87f,0f );
        
-       ObjectProperty<Color> color = new SimpleObjectProperty<Color>(startColor);
+       final ObjectProperty<Color> color = new SimpleObjectProperty<Color>(startColor);
 
 		// String that represents the color above as a JavaFX CSS function:
 		// -fx-body-color: rgb(r, g, b);
 		// with r, g, b integers between 0 and 255
 		StringBinding cssColorSpec = Bindings.createStringBinding(new Callable<String>() {
-           @Override
            public String call() throws Exception {
         	  
         		   return String.format("-fx-background-color: rgba(%d, %d, %d, %d);", 
@@ -167,7 +165,6 @@ private void buildRecordBtn() {
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.setRate(1);
 		recordBtn.setOnAction(new EventHandler<ActionEvent>() {
-           @Override
            public void handle(ActionEvent event) {
                if(isRecording) {
             	   recorder.stop();

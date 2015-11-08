@@ -48,7 +48,7 @@ public class Recorder {
 		return null;
 	}
 
-	private synchronized void rawplay(AudioFormat targetFormat) {
+	private synchronized void rawplay(final AudioFormat targetFormat) {
 		// In another thread I start:
 		Thread listeningThread = new Thread(new Runnable() {
 			public void run() {
