@@ -1,6 +1,7 @@
 package input;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
@@ -9,12 +10,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-
-import javax.sound.sampled.TargetDataLine;
+import javax.sound.sampled.*;
 
 import utility.Utils;
 
@@ -23,15 +19,6 @@ public class Recorder {
 	private boolean running = false;;
 	private ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-	private static AudioFormat getFormat() {
-		float sampleRate = 44100;
-		int sampleSizeInBits = 8;
-		int channels = 1; // mono
-		boolean signed = true;
-		boolean bigEndian = true;
-		return new AudioFormat(sampleRate, sampleSizeInBits, channels, signed,
-				bigEndian);
-	}
 
 	private synchronized TargetDataLine getLine(AudioFormat audioFormat) {
 		TargetDataLine res = null;
@@ -49,27 +36,37 @@ public class Recorder {
 	}
 
 	private synchronized void rawplay(AudioFormat targetFormat) {
+		
+		
+		
+		
 		// In another thread I start:
 		Thread listeningThread = new Thread(new Runnable() {
 			public void run() {
 
+				
+				
 				TargetDataLine line = getLine(targetFormat);
+				
 				if (line == null) {
 					return;
 				}
-
+				
+				
 				out = new ByteArrayOutputStream();
 				int numBytesRead;
-				byte[] data = new byte[line.getBufferSize() / 5];
+				byte[] data = new byte[line.getBufferSize()];
 
 				// Begin audio capture.
 				line.start();
 				running = true;
 				// Here, stopped is a global boolean set by another thread.
 				while (running) {
+					
 					numBytesRead = line.read(data, 0, data.length);
 					out.write(data, 0, numBytesRead);
-				}
+				} 
+				
 			}
 		});
 
@@ -78,12 +75,31 @@ public class Recorder {
 	}
 
 	public void start() {
-		rawplay(getFormat());
+		rawplay(WaveIO.FORMAT);
 	}
 
-	public OutputStream stop() {
+	public void stop() {
 		running = false;
-		return out;
+		save(getSaveFile());
 	}
+	
+	public File getSaveFile() {
+		File fileOut = new File(Utils.tempFolder+"/recording");
+		if(fileOut.exists()) {
+			fileOut.delete();
+			try {
+				fileOut.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return fileOut;
+	}
+	public void save(File wavFile) {
+		byte tempWaveByte[] = out.toByteArray();
+//		Utils.debug(tempWaveByte);
+        new WaveIO().writeWave(tempWaveByte, wavFile.getAbsolutePath());
+    }
 
 }

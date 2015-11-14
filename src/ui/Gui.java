@@ -19,20 +19,15 @@ import javafx.event.EventHandler;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -41,6 +36,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import logic.Analyzer;
 
 public class Gui extends Application {
 	private Text scenetitle;
@@ -61,7 +57,7 @@ public class Gui extends Application {
 	private final static String statusResult = "Show Result";
 	private final static String statusIdle = "Idle";
 	private final static String statusCalculaton = "In Calculation";
-	
+	private  Analyzer analyzer; 
 	
 	private Recorder recorder;
 	
@@ -86,8 +82,11 @@ public class Gui extends Application {
        
        
    }
+   
+
 private void initModel() {
 	recorder = new Recorder();
+	analyzer = new Analyzer();
 }
 private void buildOutputTitle() {
 	output = new Text("Output:\nThis will be the standard output");
@@ -113,7 +112,7 @@ private void buildFileChooserBtn(Stage primaryStage) {
                     	   File file = fileChooser.showOpenDialog(primaryStage);
                     	   if (file != null) {
                                // process file
-                        	   Utils.debug("should process input file");
+                        	   output.setText(analyzer.analyze(file));
                            }
                        }
                        
@@ -175,6 +174,7 @@ private void buildRecordBtn() {
             	   timeline.playFrom(Duration.seconds(2));
             	   timeline.stop();
             	   scenetitle.setText(statusCalculaton);
+            	   output.setText(analyzer.analyze(new File(Utils.recordingFilePath)));
             	  
                } else {
             	   recorder.start();
