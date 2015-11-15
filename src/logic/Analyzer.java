@@ -6,6 +6,8 @@ import input.WaveIO;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,10 +89,10 @@ public class Analyzer {
 			}	
 		}
 		
+	
+	
 		
-		List<DataPoint> listPoints;
-		int bestCountForIdenticalOffset = 0;
-		int bestSongId = -1;
+		ArrayList<WeightedMusic> bestMusicList = new ArrayList<WeightedMusic>();
 		for (int id = 0; id < FileSystem.getSongList().size(); id++) {
 			
 			//System.out.println("check match map for song id: " + id);
@@ -106,18 +108,24 @@ public class Analyzer {
 				}
 				
 			}
-			System.out.println("best Count For Song  " + FileSystem.getSongById(id)
-					+ "is: " + bestCountForSong);
-			
-			if (bestCountForSong > bestCountForIdenticalOffset) {
-				bestCountForIdenticalOffset = bestCountForSong;
-				bestSongId = id;
-			}
+			WeightedMusic m = new WeightedMusic(id, bestCountForSong);
+			bestMusicList.add(m);
 		}
-		System.out.println("best Count For Song  " + FileSystem.getSongById(bestSongId)
-				+ "is: " + bestCountForIdenticalOffset);
+		
+		//Collections.sort(bestMusicList);
+		String output = "";
+		
+		for(int i=0; i<bestMusicList.size(); i++) {
+			int rank = bestMusicList.size() - 1;
+			String songName= FileSystem.getSongById(bestMusicList.get(i).id);
+			output += rank + ". " + songName;
+			Utils.debug(rank + ". " + songName + " with " + bestMusicList.get(i).weight + " match");
+			output+="\n";
+			
+		}
+		
 
-		return("Best song: " + FileSystem.getSongById(bestSongId));
+		return output;
 		
 	}
 
