@@ -112,13 +112,15 @@ public class Analyzer {
 			bestMusicList.add(m);
 		}
 		
-		//Collections.sort(bestMusicList);
+		Collections.sort(bestMusicList);
 		String output = "";
 		
-		for(int i=0; i<bestMusicList.size(); i++) {
-			int rank = bestMusicList.size() - 1;
+		int listSize = bestMusicList.size();
+		
+		for(int i=listSize-1; i>listSize-6; i--) {
+			int rank = listSize - i;
 			String songName= FileSystem.getSongById(bestMusicList.get(i).id);
-			output += rank + ". " + songName;
+			output += "["+ rank + "]. " + songName;
 			Utils.debug(rank + ". " + songName + " with " + bestMusicList.get(i).weight + " match");
 			output+="\n";
 			
