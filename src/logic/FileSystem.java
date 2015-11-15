@@ -16,9 +16,11 @@ import utility.Utils;
 public class FileSystem {
 	private static HashMap<String, Integer> SongNameIdMap;
 	private static ArrayList<String> SongNameList;
+	private static ArrayList<String> trainedSongNameList;
 	
 	private static AudioFilter filter = new AudioFilter();
 	private static String infoFilePath = "musicalFileList.txt";
+	private static String trainedFilePath = "trainedFileList.txt";
 	
 	private static boolean isInit = false;
 	
@@ -46,6 +48,19 @@ public class FileSystem {
 		}
 		return SongNameList.get(id);
 	}
+	
+	public static void addTrainedSongList(String songName) {
+		if(!isSongTrained(songName)) {
+			trainedSongNameList.add(songName);
+			WriteTrainedFile();
+		}
+		
+	}
+	
+	public static boolean isSongTrained(String songName) {
+		return trainedSongNameList.contains(songName);
+	}
+	
 	
 	public static ArrayList<File> getSongList() {
 		if(!isInit) {
@@ -75,6 +90,7 @@ public class FileSystem {
 			if (file.exists()) {
 				file.delete();
 			}
+
 			file.createNewFile();
 
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
@@ -91,11 +107,62 @@ public class FileSystem {
 			e.printStackTrace();
 		}
 	}
-	
+	private static void WriteTrainedFile() {
+		try {
+			File file = new File(Utils.tempFolder + trainedFilePath);
+
+			// if file doesnt exists, then create it
+			if (file.exists()) {
+				file.delete();
+			}
+
+			file.createNewFile();
+
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			
+			for(String fileName: trainedSongNameList) {
+				bw.write(fileName);
+				bw.newLine();
+			}
+			
+			
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	private static void init() {
 		Utils.debug("init fileSystem");
 		SongNameIdMap = new HashMap<String, Integer>();
 		SongNameList = new ArrayList<String>();
+		trainedSongNameList= new ArrayList<String>();
+		
+		
+		File trainedFile = new File(Utils.tempFolder + trainedFilePath);
+		try {
+		if(!trainedFile.exists()) {
+			
+			trainedFile.createNewFile();
+			
+		} else {
+			FileReader fr = new FileReader(trainedFile.getAbsoluteFile());
+			BufferedReader br = new BufferedReader(fr);
+			
+			String fileName;
+			int id = 0;
+			while( (fileName=br.readLine()) != null) {
+				trainedSongNameList.add(fileName);
+				
+				
+			}
+			
+		}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		File file = new File(Utils.tempFolder + infoFilePath);
 		// if file doesnt exists, then create it

@@ -34,7 +34,7 @@ public class Recorder {
 		}
 		return null;
 	}
-
+	
 
 	private synchronized void rawplay(final AudioFormat targetFormat) {
 

@@ -27,9 +27,29 @@ public class Analyzer {
 		dataHashMap = DatabaseManager.readDataHashMap();
 		if(dataHashMap == null) {
 			trainDatabase();
-			writeDataToFile();
+		} else {
+			updateDatabase();
 		}
+		writeDataToFile();
 		
+	}
+	
+	private void updateDatabase() {
+		Utils.debug("-----start train database music-------");
+		
+		
+		for(File file: FileSystem.getSongList()) {
+			if(!FileSystem.isSongTrained(file.getName())) {
+				Utils.debug("train " + file.getName() + " start");
+				trainAudio(file); 	
+				Utils.debug("train " + file.getName() + " completed");
+			} else {
+				Utils.debug( file.getName() + " is already trained ");
+			}
+			
+			
+		}
+		Utils.debug("-----complete train database music-------");
 	}
 	public void writeDataToFile() {
 		DatabaseManager.storeDataHashMap(dataHashMap);
@@ -130,6 +150,8 @@ public class Analyzer {
 	
 	private void trainAudio(File file) {
 		String fileName = file.getName();
+		
+		
 		int songId = FileSystem.getSongId(fileName);
 		
 		long[] hashTags = FingerPrint.fingerPrint((performFFT(file)));
@@ -149,6 +171,7 @@ public class Analyzer {
 				listPoints.add(point); // add a new point 
 			}
 		}
+		FileSystem.addTrainedSongList(fileName);
 	}
 	
 	public void trainDatabase() {
