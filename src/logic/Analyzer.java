@@ -81,6 +81,7 @@ public class Analyzer {
 						} else {
 							tmpMap.put(offset, new Integer(count + 1));
 						}
+						
 					}
 				}
 			}	
@@ -88,11 +89,11 @@ public class Analyzer {
 		
 		
 		List<DataPoint> listPoints;
-		int bestCount = 0;
-		int bestSong = -1;
+		int bestCountForIdenticalOffset = 0;
+		int bestSongId = -1;
 		for (int id = 0; id < FileSystem.getSongList().size(); id++) {
 			
-			System.out.println("check match map for song id: " + id);
+			//System.out.println("check match map for song id: " + id);
 			Map<Integer, Integer> tmpMap = matchMap.get(id);
 			if(tmpMap == null) {
 				 tmpMap = new HashMap<Integer, Integer>();
@@ -103,17 +104,20 @@ public class Analyzer {
 				if (entry.getValue() > bestCountForSong) {
 					bestCountForSong = entry.getValue();
 				}
-				System.out.println("Time offset = " + entry.getKey()
-						+ ", Count = " + entry.getValue());
+				
 			}
-
-			if (bestCountForSong > bestCount) {
-				bestCount = bestCountForSong;
-				bestSong = id;
+			System.out.println("best Count For Song  " + FileSystem.getSongById(id)
+					+ "is: " + bestCountForSong);
+			
+			if (bestCountForSong > bestCountForIdenticalOffset) {
+				bestCountForIdenticalOffset = bestCountForSong;
+				bestSongId = id;
 			}
 		}
+		System.out.println("best Count For Song  " + FileSystem.getSongById(bestSongId)
+				+ "is: " + bestCountForIdenticalOffset);
 
-		return("Best song: " + FileSystem.getSongById(bestSong));
+		return("Best song: " + FileSystem.getSongById(bestSongId));
 		
 	}
 

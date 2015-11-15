@@ -73,7 +73,7 @@ public class FileSystem {
 				songList.add(song);
 			}
 		}
-		Utils.debug("songlist size " + songList.size());
+		//Utils.debug("songlist size " + songList.size());
 		return songList;
 	}
 	
