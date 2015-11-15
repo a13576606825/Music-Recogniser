@@ -14,7 +14,7 @@ import utility.Utils;
 
 
 public class Analyzer {
-	public static final int CHUNK_SIZE = 1024*4; 
+	public static final int CHUNK_SIZE = 1024*1; 
 	private static WaveIO waveIO = new WaveIO();
 	
 	
